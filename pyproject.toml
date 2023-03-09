@@ -13,6 +13,7 @@ google-cloud-speech = "^2.18.0"
 google-cloud-texttospeech = "^2.14.1"
 google-auth = "^2.16.2"
 openai = "^0.27.1"
+djangorestframework-jsonapi = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core"]
