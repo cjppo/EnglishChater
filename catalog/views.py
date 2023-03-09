@@ -22,7 +22,7 @@ def chatWithUser(request):
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './data/cjkl1317-07f0da05283b.json'
     client = speech.SpeechClient()
 
-    audio = speech.RecognitionAudio(content=base64.b64decode(data['data'], altchars=None, validate=False))
+    audio = speech.RecognitionAudio(content=base64.b64decode(message, altchars=None, validate=False))
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.ENCODING_UNSPECIFIED,
         sample_rate_hertz=48000,
@@ -45,7 +45,6 @@ def chatWithUser(request):
     response = client.synthesize_speech(
         input=synthesis_input, voice=voice, audio_config=audio_config
     )
-    print(response)
     if len(response.audio_content) > 0:
         return HttpResponse(base64.encodebytes(response.audio_content))
     else:
@@ -66,7 +65,6 @@ def receiveAudioBase64Data(request):
         language_code="en-US",
     )
     response = client.recognize(config=config, audio=audio)
-    print(response)
     if len(response.results) > 0:
         return HttpResponse("result:{}".format(response.results[0].alternatives[0].transcript))
     else:
@@ -90,9 +88,8 @@ def transsferTextToSpeech(request):
     response = client.synthesize_speech(
         input=synthesis_input, voice=voice, audio_config=audio_config
     )
-    print(response)
     if len(response.audio_content) > 0:
-        return HttpResponse("result:{}".format(base64.encodebytes(response.audio_content)))
+        return HttpResponse(base64.encodebytes(response.audio_content))
     else:
         return HttpResponse("result: ")
 
@@ -116,7 +113,6 @@ def chat(message):
         stop=None,
         temperature=0.9,
     )
-    print(response)
     for choice in response.choices:
         if "message" in choice:
             return choice.message.content
