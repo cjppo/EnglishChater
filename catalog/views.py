@@ -29,6 +29,7 @@ def chatWithUser(request):
         language_code="en-US",
     )
     response = client.recognize(config=config, audio=audio)
+    print(response)
     if len(response.results) == 0:
         return HttpResponse("")
 
@@ -44,7 +45,7 @@ def chatWithUser(request):
     response = client.synthesize_speech(
         input=synthesis_input, voice=voice, audio_config=audio_config
     )
-
+    print(response)
     if len(response.audio_content) > 0:
         return HttpResponse(base64.encodebytes(response.audio_content))
     else:
@@ -65,7 +66,7 @@ def receiveAudioBase64Data(request):
         language_code="en-US",
     )
     response = client.recognize(config=config, audio=audio)
-
+    print(response)
     if len(response.results) > 0:
         return HttpResponse("result:{}".format(response.results[0].alternatives[0].transcript))
     else:
@@ -89,7 +90,7 @@ def transsferTextToSpeech(request):
     response = client.synthesize_speech(
         input=synthesis_input, voice=voice, audio_config=audio_config
     )
-
+    print(response)
     if len(response.audio_content) > 0:
         return HttpResponse("result:{}".format(base64.encodebytes(response.audio_content)))
     else:
@@ -111,10 +112,11 @@ def chat(message):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=message_log,
-        max_tokens=100,
+        max_tokens=1000,
         stop=None,
         temperature=0.9,
     )
+    print(response)
     for choice in response.choices:
         if "text" in choice:
             return choice.text
