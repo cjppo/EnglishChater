@@ -118,8 +118,8 @@ def chat(message):
     )
     print(response)
     for choice in response.choices:
-        if "text" in choice:
-            return choice.text
+        if "message" in choice:
+            return choice.message.content
     return "something error"
 
 def clearTheContext():
