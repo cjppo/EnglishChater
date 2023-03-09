@@ -103,7 +103,7 @@ def chatWithGPT(request):
     return HttpResponse(chat(message))
 
 def chat(message):
-    openai.api_key = "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"
+    openai.api_key = os.environ['OPENAI_KEY']
     if message == 'clear context':
         clearTheContext()
         return HttpResponse("done")
