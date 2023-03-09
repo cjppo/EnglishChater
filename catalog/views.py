@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view
 from google.cloud import speech, texttospeech
 
 message_log = [
-    {"role": "system", "content": "You are a helpful english teacher."}
+    {"role": "system", "content": "You act like a real man."}
 ]
 speech_to_text_service_url = 'https://speech.googleapis.com/v1/speech:recognize'
 text_to_speech_service_url = 'https://texttospeech.googleapis.com/v1/text:synthesize'
@@ -29,7 +29,6 @@ def chatWithUser(request):
         language_code="en-US",
     )
     response = client.recognize(config=config, audio=audio)
-    print(response)
     if len(response.results) == 0:
         return HttpResponse("")
 
@@ -101,20 +100,23 @@ def chatWithGPT(request):
     return HttpResponse(chat(message))
 
 def chat(message):
+    global message_log
     openai.api_key = os.environ['OPENAI_KEY']
     if message == 'clear context':
         clearTheContext()
         return HttpResponse("done")
     message_log.append({"role": "user", "content": message})
+    print(message_log)
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=message_log,
         max_tokens=1000,
         stop=None,
-        temperature=0.9,
+        temperature=1,
     )
     for choice in response.choices:
         if "message" in choice:
+            message_log.append({"role": "assistant", "content": choice.message.content})
             return choice.message.content
     return "something error"
 
