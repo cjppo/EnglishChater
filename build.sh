@@ -3,3 +3,4 @@
 set -o errexit
 
 poetry install
+poetry add gunicorn
